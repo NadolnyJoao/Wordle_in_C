@@ -1,8 +1,11 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
 char *sorteiaPalavra(const char *arquivo);
+
 int main(void) {
   srand((unsigned int)time(NULL));
 
@@ -11,15 +14,18 @@ int main(void) {
     printf("Erro ao sortear palavra.\n");
     return 1;
   }
-
+  puts(palavra);
   char pUsr[256];
+  char descobertas[6] = "_____";
   int acertou = 0;
   int tentativas = 0;
+  int entradaEncerrada = 0;
 
   while (!acertou && tentativas < 10) {
     printf("Digite uma palavra de 5 letras: ");
 
     if (fgets(pUsr, sizeof(pUsr), stdin) == NULL) {
+      entradaEncerrada = 1;
       break;
     }
 
@@ -30,18 +36,20 @@ int main(void) {
       continue;
     }
 
+    for (int i = 0; i < 5; i++) {
+      pUsr[i] = (char)tolower((unsigned char)pUsr[i]);
+    }
+
     int certas = 0;
 
     for (int i = 0; i < 5; i++) {
       if (pUsr[i] == palavra[i]) {
-        printf("%c", palavra[i]);
+        descobertas[i] = palavra[i];
         certas++;
-      } else {
-        printf("_");
       }
     }
 
-    printf("\n");
+    puts(descobertas);
     tentativas++;
 
     if (certas == 5) {
@@ -51,6 +59,8 @@ int main(void) {
 
   if (acertou) {
     printf("Você acertou!\n");
+  } else if (entradaEncerrada) {
+    printf("\nEntrada encerrada.\n");
   } else {
     printf("Suas tentativas acabaram. A palavra era: %s\n", palavra);
   }
@@ -58,6 +68,7 @@ int main(void) {
   free(palavra);
   return 0;
 }
+
 char *sorteiaPalavra(const char *arquivo) {
   FILE *fp = fopen(arquivo, "r");
   if (fp == NULL) {
@@ -67,7 +78,6 @@ char *sorteiaPalavra(const char *arquivo) {
   char buffer[256];
   int totalPalavras = 0;
 
-  /* Conta as palavras válidas. */
   while (fgets(buffer, sizeof(buffer), fp) != NULL) {
     buffer[strcspn(buffer, "\r\n")] = '\0';
 
@@ -84,7 +94,6 @@ char *sorteiaPalavra(const char *arquivo) {
   int sorteada = rand() % totalPalavras;
   rewind(fp);
 
-  /* Lê novamente até encontrar a palavra sorteada. */
   while (fgets(buffer, sizeof(buffer), fp) != NULL) {
     buffer[strcspn(buffer, "\r\n")] = '\0';
 
