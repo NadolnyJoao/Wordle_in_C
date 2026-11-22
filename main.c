@@ -2,7 +2,62 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+char *sorteiaPalavra(const char *arquivo);
+int main(void) {
+  srand((unsigned int)time(NULL));
 
+  char *palavra = sorteiaPalavra("palavras.txt");
+  if (palavra == NULL) {
+    printf("Erro ao sortear palavra.\n");
+    return 1;
+  }
+
+  char pUsr[256];
+  int acertou = 0;
+  int tentativas = 0;
+
+  while (!acertou && tentativas < 10) {
+    printf("Digite uma palavra de 5 letras: ");
+
+    if (fgets(pUsr, sizeof(pUsr), stdin) == NULL) {
+      break;
+    }
+
+    pUsr[strcspn(pUsr, "\r\n")] = '\0';
+
+    if (strlen(pUsr) != 5) {
+      printf("Insira uma palavra válida de 5 letras.\n");
+      continue;
+    }
+
+    int certas = 0;
+
+    for (int i = 0; i < 5; i++) {
+      if (pUsr[i] == palavra[i]) {
+        printf("%c", palavra[i]);
+        certas++;
+      } else {
+        printf("_");
+      }
+    }
+
+    printf("\n");
+    tentativas++;
+
+    if (certas == 5) {
+      acertou = 1;
+    }
+  }
+
+  if (acertou) {
+    printf("Você acertou!\n");
+  } else {
+    printf("Suas tentativas acabaram. A palavra era: %s\n", palavra);
+  }
+
+  free(palavra);
+  return 0;
+}
 char *sorteiaPalavra(const char *arquivo) {
   FILE *fp = fopen(arquivo, "r");
   if (fp == NULL) {
