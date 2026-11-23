@@ -14,7 +14,6 @@ int main(void) {
     printf("Erro ao sortear palavra.\n");
     return 1;
   }
-  puts(palavra);
   char pUsr[256];
   char descobertas[6] = "_____";
   int acertou = 0;
