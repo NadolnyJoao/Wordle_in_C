@@ -62,8 +62,8 @@ dizer
 abrir
 levar
 achar
-cantar
-dança
+canto
+danca
 pular
 jogar
 lugar
